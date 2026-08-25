@@ -1761,19 +1761,34 @@ const PHOTO_ALBUM = [
     date: "Since Childhood"
   },
   {
+    url: "/photos/photo_hotpot.jpg",
+    caption: "มื้ออาหารที่อร่อยที่สุด เพราะมีคนพิเศษอย่างเธอนั่งกินด้วยกัน 🍲🔥✨",
+    date: "Hotpot Date"
+  },
+  {
+    url: "/photos/photo_night.jpg",
+    caption: "โมเมนต์น่ารักๆ ตอนไปเที่ยว กินขนมด้วยกัน มีความสุขที่สุดเลยย 🥤😋💖",
+    date: "Night Date & Sweet Treat"
+  },
+  {
+    url: "/photos/photo_bouquet.jpg",
+    caption: "ช่อดอกไม้แทนความรู้สึกดีๆ ที่ตั้งใจมอบให้เธอคนเดียวเลยนะ 💐🌸",
+    date: "Special Pastel Bouquet"
+  },
+  {
+    url: "/photos/photo_sportsday.jpg",
+    caption: "ความทรงจำในรั้วโรงเรียนและวันกีฬาสีที่เคียงข้างกัน 🎪📣✨",
+    date: "School Sports Day"
+  },
+  {
+    url: "/photos/photo_student.jpg",
+    caption: "คนเก่งในชุดนักเรียน ตั้งใจเรียนและน่ารักเสมอนะคะ 🎓👔💕",
+    date: "Student Portrait"
+  },
+  {
     url: "/photos/photo2.jpg",
     caption: "ไม่ว่าจะเดินทางไปที่ไหน แค่มีเธอข้างๆ ก็เป็นช่วงเวลาที่ดีที่สุด 🚗💖",
     date: "Sweet Moments"
-  },
-  {
-    url: "/photos/photo3.jpg",
-    caption: "มื้ออาหารที่อร่อยที่สุด เพราะมีคนพิเศษอย่างเธอนั่งกินด้วยกัน 🍲🔥✨",
-    date: "Dinner Date"
-  },
-  {
-    url: "/photos/photo4.jpg",
-    caption: "ช่อดอกไม้แทนความรู้สึกดีๆ ที่ตั้งใจมอบให้เธอคนเดียวเลยนะ 💐🌸",
-    date: "Special Bouquet"
   },
   {
     url: "/photos/photo5.jpg",
@@ -2498,12 +2513,14 @@ window.answerTrivia = function(chosenIdx) {
 
 // 3. Memory Card Matching Game
 const ALL_MEMORY_PHOTOS = [
+  "/photos/photo_hotpot.jpg",
+  "/photos/photo_night.jpg",
+  "/photos/photo_bouquet.jpg",
+  "/photos/photo_sportsday.jpg",
+  "/photos/photo_student.jpg",
   "/photos/photo1.jpg",
   "/photos/photo2.jpg",
-  "/photos/photo3.jpg",
-  "/photos/photo4.jpg",
-  "/photos/photo5.jpg",
-  "/photos/photo6.jpg"
+  "/photos/photo5.jpg"
 ];
 
 function initMemoryGame() {
