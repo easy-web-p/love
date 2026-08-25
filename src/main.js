@@ -12,6 +12,8 @@ let ytPlayer = null;
 let currentTrackIndex = 0;
 let isMusicPlaying = false;
 let isYtReady = false;
+let currentVolume = parseInt(localStorage.getItem('music_volume') || '30', 10);
+let lastVolumeBeforeMute = 30;
 let pendingUnlockIndex = null;
 
 let isAwakened = false;
@@ -330,6 +332,9 @@ window.onYouTubeIframeAPIReady = function() {
         onReady: (event) => {
           isYtReady = true;
           try {
+            if (typeof event.target.setVolume === 'function') {
+              event.target.setVolume(currentVolume);
+            }
             event.target.playVideo();
             isMusicPlaying = true;
             updateMusicUI();
@@ -359,6 +364,9 @@ function tryAutoPlayMusic() {
   }
   if (ytPlayer && isYtReady && typeof ytPlayer.playVideo === 'function') {
     try {
+      if (typeof ytPlayer.setVolume === 'function') {
+        ytPlayer.setVolume(currentVolume);
+      }
       ytPlayer.playVideo();
       isMusicPlaying = true;
       updateMusicUI();
@@ -519,14 +527,52 @@ function autoPlayNextUnlockedSong() {
   playCurrentTrack();
 }
 
+window.changeMusicVolume = function(val) {
+  currentVolume = parseInt(val, 10);
+  localStorage.setItem('music_volume', currentVolume);
+  if (ytPlayer && isYtReady && typeof ytPlayer.setVolume === 'function') {
+    ytPlayer.setVolume(currentVolume);
+  }
+  updateVolumeUI();
+};
+
+window.toggleMuteVolume = function() {
+  if (currentVolume > 0) {
+    lastVolumeBeforeMute = currentVolume;
+    window.changeMusicVolume(0);
+  } else {
+    window.changeMusicVolume(lastVolumeBeforeMute || 30);
+  }
+};
+
+function updateVolumeUI() {
+  const icon = document.getElementById('volume-icon');
+  const txt = document.getElementById('volume-text');
+  const slider = document.getElementById('music-volume-slider');
+
+  if (txt) txt.innerText = `${currentVolume}%`;
+  if (slider) slider.value = currentVolume;
+
+  if (icon) {
+    if (currentVolume === 0) icon.innerText = '🔇';
+    else if (currentVolume < 35) icon.innerText = '🔈';
+    else if (currentVolume < 75) icon.innerText = '🔉';
+    else icon.innerText = '🔊';
+  }
+}
+
 function playCurrentTrack() {
   if (ytPlayer && isYtReady) {
     ytPlayer.loadVideoById(PLAYLIST[currentTrackIndex].id);
+    if (typeof ytPlayer.setVolume === 'function') {
+      ytPlayer.setVolume(currentVolume);
+    }
     isMusicPlaying = true;
     showToast(`🎵 กำลังเล่น: ${PLAYLIST[currentTrackIndex].title} 💕`);
     startProgressTracker();
   }
   updateMusicUI();
+  updateVolumeUI();
   renderPlaylistItems();
 }
 
@@ -878,6 +924,26 @@ function getFloatingMusicButtonHtml() {
           <button id="aesthetic-loop-btn" onclick="toggleLoop()" class="aesthetic-control-btn text-base" title="วนซ้ำ">
             🔁
           </button>
+        </div>
+
+        <!-- 4. Interactive Volume Slider (เบาเสียง/ดังเสียงตามใจผู้ฟัง) -->
+        <div class="flex items-center space-x-2.5 px-3.5 py-2 bg-[#ffffff]/60 rounded-2xl">
+          <button onclick="toggleMuteVolume()" class="text-sm text-[#5c2035] hover:scale-110 active:scale-90 transition-transform" title="เปิด/ปิดเสียง">
+            <span id="volume-icon">${currentVolume === 0 ? '🔇' : currentVolume < 35 ? '🔈' : currentVolume < 75 ? '🔉' : '🔊'}</span>
+          </button>
+          <input 
+            id="music-volume-slider" 
+            type="range" 
+            min="0" 
+            max="100" 
+            value="${currentVolume}" 
+            oninput="changeMusicVolume(this.value)" 
+            class="w-full accent-[#5c2035] h-1.5 bg-[#5c2035]/20 rounded-lg cursor-pointer transition-all" 
+            title="ปรับระดับเสียงเพลง"
+          />
+          <span id="volume-text" class="text-[11px] font-mono font-bold text-[#5c2035] w-8 text-right">
+            ${currentVolume}%
+          </span>
         </div>
 
         <!-- Open Playlist Bar -->
