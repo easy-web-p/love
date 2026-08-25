@@ -2111,11 +2111,6 @@ const PHOTO_ALBUM = [
     date: "Special Pastel Bouquet"
   },
   {
-    url: "/photos/photo_sportsday.jpg",
-    caption: "ความทรงจำในรั้วโรงเรียนและวันกีฬาสีที่เคียงข้างกัน 🎪📣✨",
-    date: "School Sports Day"
-  },
-  {
     url: "/photos/photo2.jpg",
     caption: "ไม่ว่าจะเดินทางไปที่ไหน แค่มีเธอข้างๆ ก็เป็นช่วงเวลาที่ดีที่สุด 🚗💖",
     date: "Sweet Moments"
@@ -2939,7 +2934,6 @@ window.answerTrivia = function(chosenIdx) {
 const ALL_MEMORY_PHOTOS = [
   "/photos/photo_hotpot.jpg",
   "/photos/photo_bouquet.jpg",
-  "/photos/photo_sportsday.jpg",
   "/photos/photo1.jpg",
   "/photos/photo2.jpg",
   "/photos/photo5.jpg"
@@ -3208,18 +3202,14 @@ window.closeJigsawPreviewModal = function() {
   if (modal) modal.classList.add('hidden');
 };
 
-// Start on the last active screen persisted in localStorage or Countdown Screen if locked
-if (!isAnniversaryUnlocked()) {
-  renderAnniversaryCountdownScreen();
+// Start on the last active screen persisted in localStorage or Screen 1: Velvet Lock
+const savedScreen = localStorage.getItem('current_screen');
+if (savedScreen === 'surprise') {
+  renderSurprisePage();
+} else if (savedScreen === 'charging') {
+  renderAnniversaryScreen();
 } else {
-  const savedScreen = localStorage.getItem('current_screen');
-  if (savedScreen === 'surprise') {
-    renderSurprisePage();
-  } else if (savedScreen === 'charging') {
-    renderAnniversaryScreen();
-  } else {
-    renderPasscodeScreen();
-  }
+  renderPasscodeScreen();
 }
 
 
