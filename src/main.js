@@ -1275,7 +1275,8 @@ window.confirmCountdownBypass = function() {
 
 function renderPasscodeScreen() {
   currentScreen = "passcode";
-  localStorage.setItem('current_screen', 'passcode');
+  sessionStorage.setItem('current_screen', 'passcode');
+  localStorage.removeItem('current_screen');
   enteredPin = "";
   
   if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
@@ -1555,7 +1556,7 @@ window.closeModal = function() {
 
 function renderAnniversaryScreen() {
   currentScreen = "charging";
-  localStorage.setItem('current_screen', 'charging');
+  sessionStorage.setItem('current_screen', 'charging');
   isAwakened = false;
   isHolding = false;
   holdProgress = 0;
@@ -2126,7 +2127,7 @@ const PHOTO_ALBUM = [
 
 function renderSurprisePage() {
   currentScreen = "surprise";
-  localStorage.setItem('current_screen', 'surprise');
+  sessionStorage.setItem('current_screen', 'surprise');
   if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
   if (holdDrainTimer) { clearInterval(holdDrainTimer); holdDrainTimer = null; }
   if (decayTimer) { clearInterval(decayTimer); decayTimer = null; }
@@ -2556,8 +2557,10 @@ function renderSurprisePage() {
 }
 
 window.handleLockScreenButton = function() {
+  sessionStorage.clear();
   localStorage.removeItem('current_screen');
   playSound('tap');
+  showToast("🔒 ล็อกกลับสู่หน้าใส่รหัสผ่านแล้วค่ะ");
   renderPasscodeScreen();
 };
 
@@ -3199,8 +3202,8 @@ window.closeJigsawPreviewModal = function() {
   if (modal) modal.classList.add('hidden');
 };
 
-// Start on the last active screen persisted in localStorage or Screen 1: Velvet Lock
-const savedScreen = localStorage.getItem('current_screen');
+// Start on the active session screen in sessionStorage or Screen 1: Velvet Lock
+const savedScreen = sessionStorage.getItem('current_screen');
 if (savedScreen === 'surprise') {
   renderSurprisePage();
 } else if (savedScreen === 'charging') {
