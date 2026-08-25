@@ -1984,7 +1984,7 @@ function renderSurprisePage() {
         <!-- GAME 3: Memory Card Matching Game -->
         <div id="game-view-memory" class="hidden space-y-4 pt-1">
           <p class="text-xs text-pink-200 font-cute">
-            🃏 พลิกการ์ดจับคู่สัญลักษณ์ความทรงจำให้ครบทั้ง 4 คู่!
+            🃏 พลิกการ์ดจับคู่รูปภาพความทรงจำของเราให้ครบทั้ง 4 คู่! 💕
           </p>
           <div id="memory-grid" class="grid grid-cols-4 gap-2.5 max-w-[320px] mx-auto">
             <!-- Rendered dynamically -->
@@ -2497,10 +2497,24 @@ window.answerTrivia = function(chosenIdx) {
 };
 
 // 3. Memory Card Matching Game
-const MEMORY_ICONS = ["💖", "🍨", "💍", "🚀", "💖", "🍨", "💍", "🚀"];
+const ALL_MEMORY_PHOTOS = [
+  "/photos/photo1.jpg",
+  "/photos/photo2.jpg",
+  "/photos/photo3.jpg",
+  "/photos/photo4.jpg",
+  "/photos/photo5.jpg",
+  "/photos/photo6.jpg"
+];
 
 function initMemoryGame() {
-  shuffledMemory = [...MEMORY_ICONS].sort(() => Math.random() - 0.5);
+  // สุ่มเลือก 4 รูปความทรงจำสำหรับ 4 คู่ (8 ใบ)
+  const selectedPhotos = [...ALL_MEMORY_PHOTOS].sort(() => Math.random() - 0.5).slice(0, 4);
+  const deck = [];
+  selectedPhotos.forEach((img, id) => {
+    deck.push({ id, img });
+    deck.push({ id, img });
+  });
+  shuffledMemory = deck.sort(() => Math.random() - 0.5);
   flippedCards = [];
   matchedCount = 0;
   renderMemoryGrid();
@@ -2510,14 +2524,15 @@ function renderMemoryGrid() {
   const grid = document.getElementById('memory-grid');
   if (!grid) return;
 
-  grid.innerHTML = shuffledMemory.map((icon, idx) => `
+  grid.innerHTML = shuffledMemory.map((card, idx) => `
     <div id="memory-card-${idx}" onclick="flipMemoryCard(${idx})" class="memory-flip-card w-full aspect-square cursor-pointer">
       <div class="memory-flip-inner">
-        <div class="memory-card-front bg-purple-950/80 border border-purple-500/40 text-pink-300 font-bold text-lg shadow-md flex items-center justify-center">
-          ❓
+        <div class="memory-card-front bg-purple-950/85 border border-purple-500/40 hover:border-pink-500/70 text-pink-400 font-bold text-lg shadow-md flex items-center justify-center rounded-2xl transition-all">
+          <span class="text-xl filter drop-shadow">❓</span>
         </div>
-        <div class="memory-card-back bg-gradient-to-br from-pink-900 to-purple-900 border border-pink-500/60 text-2xl shadow-xl flex items-center justify-center">
-          ${icon}
+        <div class="memory-card-back bg-purple-950 border-2 border-pink-500/80 shadow-xl overflow-hidden rounded-2xl p-0.5 relative">
+          <img src="${card.img}" class="w-full h-full object-cover rounded-xl" alt="ความทรงจำ" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
         </div>
       </div>
     </div>
@@ -2535,22 +2550,28 @@ window.flipMemoryCard = function(idx) {
 
   if (flippedCards.length === 2) {
     const [first, second] = flippedCards;
-    if (shuffledMemory[first] === shuffledMemory[second]) {
+    if (shuffledMemory[first].id === shuffledMemory[second].id) {
       playSound('success');
       matchedCount += 2;
+      
+      const c1 = document.getElementById(`memory-card-${first}`);
+      const c2 = document.getElementById(`memory-card-${second}`);
+      if (c1) c1.classList.add('matched');
+      if (c2) c2.classList.add('matched');
+
       flippedCards = [];
       if (matchedCount === shuffledMemory.length) {
         setTimeout(() => {
           triggerWinAngpao();
-          showToast("🎉 จับคู่ครบทุกรูปแล้ว! คนเก่งรับซองของขวัญไปเลยค่ะ 💕");
+          showToast("🎉 จับคู่รูปความทรงจำครบทั้ง 4 คู่แล้ว! คนเก่งรับซองของขวัญไปเลยค่ะ 💕");
         }, 500);
       }
     } else {
       setTimeout(() => {
         const c1 = document.getElementById(`memory-card-${first}`);
         const c2 = document.getElementById(`memory-card-${second}`);
-        if (c1) c1.classList.remove('flipped');
-        if (c2) c2.classList.remove('flipped');
+        if (c1 && !c1.classList.contains('matched')) c1.classList.remove('flipped');
+        if (c2 && !c2.classList.contains('matched')) c2.classList.remove('flipped');
         flippedCards = [];
       }, 900);
     }
