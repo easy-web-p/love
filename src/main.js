@@ -1275,8 +1275,6 @@ window.confirmCountdownBypass = function() {
 
 function renderPasscodeScreen() {
   currentScreen = "passcode";
-  sessionStorage.setItem('current_screen', 'passcode');
-  localStorage.removeItem('current_screen');
   enteredPin = "";
   
   if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
@@ -1556,7 +1554,6 @@ window.closeModal = function() {
 
 function renderAnniversaryScreen() {
   currentScreen = "charging";
-  sessionStorage.setItem('current_screen', 'charging');
   isAwakened = false;
   isHolding = false;
   holdProgress = 0;
@@ -2127,7 +2124,6 @@ const PHOTO_ALBUM = [
 
 function renderSurprisePage() {
   currentScreen = "surprise";
-  sessionStorage.setItem('current_screen', 'surprise');
   if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
   if (holdDrainTimer) { clearInterval(holdDrainTimer); holdDrainTimer = null; }
   if (decayTimer) { clearInterval(decayTimer); decayTimer = null; }
@@ -3202,15 +3198,13 @@ window.closeJigsawPreviewModal = function() {
   if (modal) modal.classList.add('hidden');
 };
 
-// Start on the active session screen in sessionStorage or Screen 1: Velvet Lock
-const savedScreen = sessionStorage.getItem('current_screen');
-if (savedScreen === 'surprise') {
-  renderSurprisePage();
-} else if (savedScreen === 'charging') {
-  renderAnniversaryScreen();
-} else {
-  renderPasscodeScreen();
-}
+// Clean up all legacy storage keys and ALWAYS start fresh on Screen 1: Velvet Lock (260269)
+try {
+  sessionStorage.removeItem('current_screen');
+  localStorage.removeItem('current_screen');
+} catch(e) {}
+
+renderPasscodeScreen();
 
 
 
