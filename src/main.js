@@ -37,14 +37,20 @@ let flippedCards = [];
 let matchedCount = 0;
 
 // TrueMoney Config & State
+const DEFAULT_TM_GIFT_URL = "https://gift.truemoney.com/campaign/?v=01a0396b59c3718f9061a743d30d4c79b4L";
+
 let trueMoneyGiftConfig = {
-  giftUrl: localStorage.getItem('tm_gift_url') || "https://gift.truemoney.com/campaign/?v=sampleGiftCode260269",
+  giftUrl: (localStorage.getItem('tm_gift_url') && !localStorage.getItem('tm_gift_url').includes('sampleGiftCode'))
+    ? localStorage.getItem('tm_gift_url')
+    : DEFAULT_TM_GIFT_URL,
   giftAmount: localStorage.getItem('tm_gift_amount') || "520",
   senderName: localStorage.getItem('tm_sender_name') || "เค้าเองคนดี",
   note: (localStorage.getItem('tm_note') && !localStorage.getItem('tm_note').includes('ของขวัช'))
     ? localStorage.getItem('tm_note')
     : "ของขวัญคนเก่ง เล่นเกมชนะรับเงินไปช้อปปิ้งนะคนดี 💕"
 };
+localStorage.setItem('tm_gift_url', trueMoneyGiftConfig.giftUrl);
+
 
 
 
