@@ -1,0 +1,672 @@
+/* ===================================================
+   DESIGN TOKENS & VELVET LOCK DARK GLASS THEME
+   =================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Montserrat:wght@600;700;800;900&family=Orbitron:wght@500;700;900&family=Prompt:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Colors */
+  --color-bg-base: #06010d;
+  --color-bg-surface: rgba(22, 7, 38, 0.95);
+  --color-neon-pink: #ec4899;
+  --color-neon-pink-bright: #f43f5e;
+  --color-neon-pink-glow: rgba(236, 72, 153, 0.7);
+  --color-neon-purple: #c084fc;
+  --color-neon-purple-glow: rgba(192, 132, 252, 0.45);
+  --color-glass-border: rgba(192, 132, 252, 0.18);
+  --color-gold: #fbbf24;
+
+  /* Shadows */
+  --card-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(147, 51, 234, 0.2),
+    inset 0 0 20px rgba(192, 132, 252, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at 50% 50%, #200738 0%, #0d0219 50%, #040008 100%);
+  background-attachment: fixed;
+  color: #ffffff;
+  font-family: 'Prompt', sans-serif;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+#native-pin-input {
+  font-size: 16px !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #090214;
+}
+::-webkit-scrollbar-thumb {
+  background: #4c1d95;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ec4899;
+}
+
+/* Velvet Header Typography */
+.velvet-badge {
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 0.35em;
+  font-size: 11px;
+  color: rgba(216, 180, 254, 0.75);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.neon-title {
+  font-family: 'Prompt', 'Montserrat', sans-serif;
+  color: #ffffff;
+  text-shadow: 
+    0 0 10px #ffffff,
+    0 0 20px #ec4899,
+    0 0 35px #db2777,
+    0 0 60px #9333ea;
+  letter-spacing: -0.5px;
+}
+
+/* Exact Reference Match: 2-Line Glowing Neon Title */
+.happy-anniversary-neon {
+  font-family: 'Prompt', 'Montserrat', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 
+    0 0 12px #ffffff,
+    0 0 25px #ff2a85,
+    0 0 45px #ec4899,
+    0 0 75px #a855f7,
+    0 0 110px rgba(168, 85, 247, 0.8);
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+
+/* Velvet Lock Dark Glass Card */
+.neon-card {
+  position: relative;
+  background: linear-gradient(160deg, rgba(26, 9, 44, 0.96) 0%, rgba(14, 4, 25, 0.98) 100%);
+  border: 1px solid rgba(192, 132, 252, 0.15);
+  border-radius: 28px;
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(16px);
+}
+
+/* Top & Bottom Distinct Glowing Neon Gradient Bars (Exact Match) */
+.neon-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent, #ec4899 20%, #c084fc 50%, #ec4899 80%, transparent);
+  filter: drop-shadow(0 0 8px #ec4899) drop-shadow(0 0 14px #db2777);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.neon-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent, #ec4899 20%, #c084fc 50%, #ec4899 80%, transparent);
+  filter: drop-shadow(0 0 8px #ec4899) drop-shadow(0 0 14px #db2777);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+/* 6 Rounded Squircle PIN Boxes (Exact Match) */
+.pin-box {
+  width: 44px;
+  height: 54px;
+  background: rgba(18, 5, 31, 0.85);
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Prompt', 'Montserrat', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Glowing Active Box (Deep Pink Aura) */
+.pin-box.active {
+  border: 2px solid #ec4899;
+  background: rgba(38, 10, 58, 0.9);
+  box-shadow: 
+    0 0 18px rgba(236, 72, 153, 0.7),
+    0 0 30px rgba(219, 39, 119, 0.4),
+    inset 0 0 12px rgba(236, 72, 153, 0.4);
+  transform: scale(1.06);
+}
+
+.pin-box.filled {
+  border: 1.5px solid #fb7185;
+  background: rgba(48, 14, 72, 0.95);
+  color: #ffffff;
+  text-shadow: 0 0 8px #ec4899, 0 0 15px #f43f5e;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.35);
+}
+
+/* Blinking Cursor Caret */
+@keyframes caretBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.blinking-caret {
+  display: inline-block;
+  width: 2px;
+  height: 22px;
+  background-color: #ec4899;
+  box-shadow: 0 0 8px #ec4899;
+  animation: caretBlink 1s infinite;
+}
+
+
+/* Static Initial Heart & Holding States */
+.heart-static-gray {
+  opacity: 0.85;
+  transform: scale(1);
+  transition: all 0.3s ease;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.heart-holding {
+  transform: scale(0.97);
+  opacity: 1;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+
+
+/* Neon Heart Outline Draw Animation */
+@keyframes drawHeartPath {
+  from {
+    stroke-dashoffset: 350;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.heart-drawing {
+  stroke-dasharray: 350;
+  stroke-dashoffset: 350;
+  animation: drawHeartPath 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Heart Glow Animation */
+@keyframes neonHeartGlow {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.heart-glow {
+  animation: neonHeartGlow 2s infinite ease-in-out;
+}
+
+
+/* Fast Passionate Heartbeat Animation (เต้นรัวๆ ตึกตัก) */
+@keyframes fastHeartbeat {
+  0% { 
+    transform: scale(1); 
+  }
+  15% { 
+    transform: scale(1.16); 
+  }
+  30% { 
+    transform: scale(1.03); 
+  }
+  45% { 
+    transform: scale(1.20); 
+  }
+  70% { 
+    transform: scale(1); 
+  }
+  100% { 
+    transform: scale(1); 
+  }
+}
+
+.heartbeat-fast {
+  animation: fastHeartbeat 0.55s infinite cubic-bezier(0.215, 0.61, 0.355, 1) !important;
+}
+
+
+/* Charging Text Pulse */
+
+@keyframes textBlink {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; text-shadow: 0 0 10px #c084fc; }
+}
+
+.charging-text {
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 3.5px;
+  animation: textBlink 1.6s infinite ease-in-out;
+}
+
+/* Shake Animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+.shake-error {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* 3D Polaroid Perspective */
+.perspective-container {
+  perspective: 1200px;
+}
+
+.polaroid-card {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+  transform-style: preserve-3d;
+}
+
+.polaroid-card:hover {
+  transform: translateY(-6px) rotateZ(0.5deg) scale(1.02);
+  box-shadow: 0 15px 35px rgba(244, 63, 94, 0.35), 0 0 20px rgba(192, 132, 252, 0.3);
+}
+
+/* Floating Music Vinyl Button */
+@keyframes rotateVinyl {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vinyl-rotating {
+  animation: rotateVinyl 4s linear infinite;
+}
+
+/* Gift Box Bounce & Open Animation */
+@keyframes giftBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.03); }
+}
+
+.gift-bounce {
+  animation: giftBounce 2s infinite ease-in-out;
+}
+
+/* Floating Click Particle */
+@keyframes floatUpFade {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(0.8) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80px) scale(1.4) rotate(20deg);
+  }
+}
+
+.floating-heart-particle {
+  position: absolute;
+  pointer-events: none;
+  animation: floatUpFade 0.8s ease-out forwards;
+  z-index: 30;
+}
+
+/* Tap Pulse on Heart */
+#heart-container {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.heart-tap-pulse {
+  transform: scale(1.15) !important;
+  filter: drop-shadow(0 0 25px rgba(244, 63, 94, 1)) drop-shadow(0 0 45px rgba(251, 113, 133, 0.9)) !important;
+}
+
+/* Reference Match: Glowing Title Typography */
+.anniversary-glow-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.95),
+    0 0 20px #c084fc,
+    0 0 35px #a855f7,
+    0 0 55px rgba(236, 72, 153, 0.75);
+  letter-spacing: 0.03em;
+  animation: titleGlowBreath 3.5s infinite ease-in-out;
+}
+
+@keyframes titleGlowBreath {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.95),
+      0 0 20px #c084fc,
+      0 0 35px #a855f7,
+      0 0 55px rgba(236, 72, 153, 0.75);
+  }
+  50% {
+    text-shadow: 
+      0 0 14px rgba(255, 255, 255, 1),
+      0 0 28px #ec4899,
+      0 0 45px #f43f5e,
+      0 0 70px rgba(192, 132, 252, 0.9);
+  }
+}
+
+/* Ambient Pulsing Glow Behind Heart */
+@keyframes ambientGlowPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.95;
+  }
+}
+
+#heart-ambient-glow {
+  animation: ambientGlowPulse 4s infinite ease-in-out;
+}
+
+/* Golden Foil Shimmer on Special Love Coupon */
+@keyframes foilShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.golden-foil-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(35, 15, 50, 0.9) 0%, rgba(20, 5, 30, 0.95) 100%);
+  border: 2px solid rgba(251, 191, 36, 0.85);
+  box-shadow: 0 10px 30px rgba(251, 191, 36, 0.25), 0 0 20px rgba(244, 63, 94, 0.3);
+  overflow: hidden;
+}
+
+.golden-foil-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(251, 191, 36, 0.15) 30%, 
+    rgba(255, 255, 255, 0.35) 50%, 
+    rgba(251, 191, 36, 0.15) 70%, 
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: foilShimmer 3s infinite linear;
+  pointer-events: none;
+}
+
+
+/* Center Mini Heart Static Calm State (No light flashing around until pressed) */
+#center-mini-heart {
+  transform-origin: 50px 42px;
+  transition: all 0.3s ease;
+}
+
+/* 45-Degree Corner Burst Hearts on Hold */
+.burst-45-heart {
+  position: absolute;
+  pointer-events: none;
+  font-size: 13px;
+  transform: translate(-50%, -50%);
+  animation: fly45Deg 0.65s cubic-bezier(0.2, 0.8, 0.35, 1) forwards;
+  z-index: 30;
+  filter: drop-shadow(0 0 8px #8b5cf6) drop-shadow(0 0 14px #6366f1);
+}
+
+/* White Glowing Polaroid Frame matching reference */
+.white-polaroid-frame {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 16px 16px 20px 16px;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.6),
+    0 0 35px rgba(255, 42, 133, 0.55),
+    0 0 65px rgba(168, 85, 247, 0.4);
+  color: #1f2937;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.white-polaroid-frame:hover {
+  transform: scale(1.02);
+  box-shadow: 
+    0 15px 50px rgba(0, 0, 0, 0.7),
+    0 0 45px rgba(255, 42, 133, 0.8),
+    0 0 85px rgba(168, 85, 247, 0.6);
+}
+
+/* Love Time Counter Pill Boxes */
+.time-pill-box {
+  background: rgba(30, 10, 52, 0.85);
+  border: 1px solid rgba(236, 72, 153, 0.25);
+  border-radius: 20px;
+  padding: 16px 6px;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.time-pill-number {
+  font-size: 26px;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 0 8px #ffffff, 0 0 18px #ff2a85, 0 0 30px #ec4899;
+  line-height: 1;
+}
+
+/* Navigation Pill Button */
+.nav-pill-btn {
+  background: rgba(35, 12, 60, 0.9);
+  border: 1px solid rgba(192, 132, 252, 0.3);
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.nav-pill-btn:hover {
+  background: rgba(236, 72, 153, 0.5);
+  border-color: rgba(236, 72, 153, 0.8);
+  transform: scale(1.1);
+}
+
+.nav-pill-btn:active {
+  transform: scale(0.92);
+}
+
+/* Pastel Rose Aesthetic Music Player Card (Matching User Reference Image) */
+.aesthetic-music-card {
+  background: #f7d6df;
+  border-radius: 36px;
+  padding: 22px 22px 26px 22px;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.75),
+    0 0 45px rgba(244, 114, 182, 0.4);
+  color: #5c2035;
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.aesthetic-artwork-box {
+  background: #fdfafb;
+  border-radius: 28px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.aesthetic-control-btn {
+  color: #5c2035;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  padding: 6px;
+}
+
+.aesthetic-control-btn:hover {
+  color: #831843;
+  transform: scale(1.15);
+}
+
+.aesthetic-control-btn:active {
+  transform: scale(0.9);
+}
+
+.flower-gentle-breathe {
+  animation: flowerBreathe 5s infinite ease-in-out;
+  transform-origin: center center;
+}
+
+@keyframes flowerBreathe {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.05) rotate(4deg);
+  }
+}
+
+/* Red Velvet & Gold TrueMoney Angpao Card */
+.red-angpao-card {
+  background: linear-gradient(135deg, #b91c1c 0%, #881337 50%, #4c0519 100%);
+  border: 2px solid #fbbf24;
+  box-shadow: 
+    0 0 25px rgba(251, 191, 36, 0.4),
+    0 20px 40px rgba(0, 0, 0, 0.8),
+    inset 0 0 20px rgba(251, 191, 36, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.red-angpao-card::before {
+  content: '福';
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  font-size: 110px;
+  font-weight: 900;
+  color: rgba(251, 191, 36, 0.08);
+  font-family: serif;
+  pointer-events: none;
+}
+
+/* Scratch Card Canvas */
+.scratch-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+  border-radius: 20px;
+}
+
+/* Memory Match Card Flip */
+.memory-flip-card {
+  perspective: 1000px;
+  user-select: none;
+}
+
+.memory-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.memory-flip-card.flipped .memory-flip-inner {
+  transform: rotateY(180deg);
+}
+
+.memory-card-front, .memory-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.memory-card-back {
+  transform: rotateY(180deg);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
