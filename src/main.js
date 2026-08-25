@@ -2556,12 +2556,9 @@ function renderSurprisePage() {
 }
 
 window.handleLockScreenButton = function() {
+  localStorage.removeItem('current_screen');
   playSound('tap');
-  if (!isAnniversaryUnlocked()) {
-    renderAnniversaryCountdownScreen();
-  } else {
-    renderPasscodeScreen();
-  }
+  renderPasscodeScreen();
 };
 
 window.reLockToCountdown = function() {
@@ -3202,15 +3199,8 @@ window.closeJigsawPreviewModal = function() {
   if (modal) modal.classList.add('hidden');
 };
 
-// Start on the last active screen persisted in localStorage or Screen 1: Velvet Lock
-const savedScreen = localStorage.getItem('current_screen');
-if (savedScreen === 'surprise') {
-  renderSurprisePage();
-} else if (savedScreen === 'charging') {
-  renderAnniversaryScreen();
-} else {
-  renderPasscodeScreen();
-}
+// Always start directly at Screen 1: Velvet Lock (ใส่รหัสหัวใจ 260269)
+renderPasscodeScreen();
 
 
 
