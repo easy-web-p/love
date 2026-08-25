@@ -77,7 +77,34 @@ localStorage.setItem('tm_gift_url', trueMoneyGiftConfig.giftUrl);
 // ==========================================
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-function playSound(type) {
+// ==========================================
+// 1.5. Haptic Vibration Feedback Engine (ระบบสั่งการสั่นบนมือถือ)
+// ==========================================
+function triggerHaptic(type) {
+  if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    try {
+      if (type === 'tap' || type === 'tick') {
+        navigator.vibrate(25); // สั่นเบาๆ 1 จังหวะ
+      } else if (type === 'heartbeat') {
+        navigator.vibrate([35, 45, 45]); // สั่นจังหวะ ตึก...ตัก (Lub-Dub)
+      } else if (type === 'rapid_heartbeat') {
+        navigator.vibrate([60, 35, 75]); // สั่นรัวแรงตอนหัวใจเต้นเต็ม 100%
+      } else if (type === 'success') {
+        navigator.vibrate([40, 50, 40, 50, 90]); // สั่นฉลองสำเร็จ
+      } else if (type === 'error') {
+        navigator.vibrate([70, 60, 80]); // สั่นเตือนผิดพลาด
+      } else if (type === 'gift') {
+        navigator.vibrate([50, 40, 60, 40, 100, 50, 140]); // สั่นฉลองซองของขวัญ
+      } else if (Array.isArray(type) || typeof type === 'number') {
+        navigator.vibrate(type);
+      }
+    } catch(err) {}
+  }
+}
+
+function playSound(type, intensity = 1) {
+  triggerHaptic(type);
+
   if (audioCtx.state === 'suspended') {
     audioCtx.resume();
   }
@@ -2020,11 +2047,13 @@ function onChargeComplete() {
     instructionText.className = "text-xs sm:text-sm text-yellow-300 font-bold tracking-wide animate-pulse";
   }
 
-  // Play intense rapid heartbeat audio loop (~160 BPM) for the full 3s celebration until next screen!
+  // Play intense rapid heartbeat audio & haptic vibration loop (~160 BPM) for the full 3s celebration until next screen!
   if (rapidHeartbeatInterval) clearInterval(rapidHeartbeatInterval);
   playSound('heartbeat', 1.85);
+  triggerHaptic('rapid_heartbeat');
   rapidHeartbeatInterval = setInterval(() => {
     playSound('heartbeat', 1.95);
+    triggerHaptic('rapid_heartbeat');
   }, 380);
 
   playSound('success');
