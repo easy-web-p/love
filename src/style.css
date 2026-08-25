@@ -354,6 +354,35 @@ body {
   filter: drop-shadow(0 0 25px rgba(244, 63, 94, 1)) drop-shadow(0 0 45px rgba(251, 113, 133, 0.9)) !important;
 }
 
+/* Intense Rapid Heartbeat Animation for 100% Full State */
+@keyframes heartbeatOverload {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 15px rgba(236, 72, 153, 0.8)) drop-shadow(0 0 30px rgba(244, 63, 94, 0.6));
+  }
+  14% {
+    transform: scale(1.22);
+    filter: drop-shadow(0 0 35px rgba(244, 63, 94, 1)) drop-shadow(0 0 60px rgba(251, 191, 36, 0.9));
+  }
+  28% {
+    transform: scale(1.05);
+  }
+  42% {
+    transform: scale(1.28);
+    filter: drop-shadow(0 0 45px rgba(244, 63, 94, 1)) drop-shadow(0 0 75px rgba(251, 191, 36, 1));
+  }
+  70% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.heart-overload-pulse {
+  animation: heartbeatOverload 0.38s infinite cubic-bezier(0.2, 0.9, 0.3, 1) !important;
+}
+
 /* Reference Match: Glowing Title Typography */
 .anniversary-glow-title {
   font-family: 'Montserrat', sans-serif;

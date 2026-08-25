@@ -25,6 +25,7 @@ let chargePercent = 0;
 let decayTimer = null;
 let isCompletedCharging = false;
 let burstInterval = null;
+let rapidHeartbeatInterval = null;
 let anchoredHearts = [];
 
 let currentPhotoIndex = 0;
@@ -131,6 +132,33 @@ function playSound(type) {
       o.start(now + i * 0.06);
       o.stop(now + i * 0.06 + 0.5);
     });
+  } else if (type === 'heartbeat') {
+    const p = Math.max(0.5, Math.min(2.5, intensity || 1));
+    // Lub (Thump 1)
+    const osc1 = audioCtx.createOscillator();
+    const gain1 = audioCtx.createGain();
+    osc1.connect(gain1);
+    gain1.connect(audioCtx.destination);
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(62 * p, now);
+    osc1.frequency.exponentialRampToValueAtTime(36, now + 0.08);
+    gain1.gain.setValueAtTime(0.38 * Math.min(1.8, p), now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    osc1.start(now);
+    osc1.stop(now + 0.08);
+
+    // Dub (Thump 2)
+    const osc2 = audioCtx.createOscillator();
+    const gain2 = audioCtx.createGain();
+    osc2.connect(gain2);
+    gain2.connect(audioCtx.destination);
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(82 * p, now + 0.09);
+    osc2.frequency.exponentialRampToValueAtTime(42, now + 0.19);
+    gain2.gain.setValueAtTime(0.44 * Math.min(1.8, p), now + 0.09);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+    osc2.start(now + 0.09);
+    osc2.stop(now + 0.19);
   }
 }
 
@@ -1510,6 +1538,7 @@ function renderAnniversaryScreen() {
   if (holdTimer) clearInterval(holdTimer);
   if (holdDrainTimer) clearInterval(holdDrainTimer);
   if (decayTimer) clearInterval(decayTimer);
+  if (rapidHeartbeatInterval) { clearInterval(rapidHeartbeatInterval); rapidHeartbeatInterval = null; }
 
   app.innerHTML = `
     ${getFloatingMusicButtonHtml()}
@@ -1714,7 +1743,7 @@ function startHoldToAwaken() {
     container.classList.add('heart-holding');
   }
 
-  playSound('tap');
+  playSound('heartbeat', 0.9);
 
   if (holdTimer) clearInterval(holdTimer);
   if (burstInterval) clearInterval(burstInterval);
@@ -1881,7 +1910,10 @@ function tapHeartCharge(e) {
   if (isCompletedCharging || !isAwakened) return;
 
   chargePercent = Math.min(100, chargePercent + 5);
-  playSound('tap');
+  
+  // Heartbeat sound scales in pitch and intensity as the heart charges up
+  const beatIntensity = 0.85 + (chargePercent / 100) * 0.95;
+  playSound('heartbeat', beatIntensity);
 
   spawnHeartParticle(e);
 
@@ -1974,21 +2006,34 @@ function updateHeartDisplay() {
   }
 }
 
-
 function onChargeComplete() {
   const instructionText = document.getElementById('instruction-text');
-  playSound('success');
+  const container = document.getElementById('heart-container');
+  const svg = document.getElementById('svg-heart');
+
+  // Add intense overload pulsing vibration
+  if (container) container.classList.add('heart-overload-pulse');
+  if (svg) svg.classList.add('heart-overload-pulse');
 
   if (instructionText) {
-    instructionText.innerText = "✨ ชาร์จพลังรักเต็ม 100% แล้ว! 💕";
+    instructionText.innerText = "💓 ตึกตัก! ตึกตัก! ตึกตัก! หัวใจเต้นแรงที่สุดเพื่อเธอ 💕";
     instructionText.className = "text-xs sm:text-sm text-yellow-300 font-bold tracking-wide animate-pulse";
   }
+
+  // Play intense rapid heartbeat audio loop (~160 BPM) for the full 3s celebration until next screen!
+  if (rapidHeartbeatInterval) clearInterval(rapidHeartbeatInterval);
+  playSound('heartbeat', 1.85);
+  rapidHeartbeatInterval = setInterval(() => {
+    playSound('heartbeat', 1.95);
+  }, 380);
+
+  playSound('success');
 
   if (typeof confetti === 'function') {
     try {
       confetti({
-        particleCount: 160,
-        spread: 90,
+        particleCount: 180,
+        spread: 95,
         colors: ['#fbbf24', '#f43f5e', '#ec4899', '#c084fc', '#ffffff'],
         origin: { y: 0.6 }
       });
@@ -1999,16 +2044,22 @@ function onChargeComplete() {
     if (typeof confetti === 'function' && currentScreen === 'charging') {
       try {
         confetti({
-          particleCount: 100,
-          spread: 80,
+          particleCount: 120,
+          spread: 85,
           colors: ['#fbbf24', '#f43f5e', '#ffffff'],
           origin: { y: 0.5 }
         });
       } catch(err) {}
     }
-  }, 1500);
+  }, 1400);
 
-  setTimeout(renderSurprisePage, 3000);
+  setTimeout(() => {
+    if (rapidHeartbeatInterval) {
+      clearInterval(rapidHeartbeatInterval);
+      rapidHeartbeatInterval = null;
+    }
+    renderSurprisePage();
+  }, 3000);
 }
 
 // ==========================================
