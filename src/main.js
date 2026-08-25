@@ -35,6 +35,11 @@ let currentTriviaStep = 0;
 let shuffledMemory = [];
 let flippedCards = [];
 let matchedCount = 0;
+let isMemoryPairMatched = false;
+let currentJigsawPhoto = "/photos/photo_hotpot.jpg";
+let currentJigsawState = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+let selectedJigsawIndex = null;
+let isJigsawCompleted = false;
 
 // TrueMoney Config & State
 const DEFAULT_TM_GIFT_URL = "https://gift.truemoney.com/campaign/?v=01a0396b59c3718f9061a743d30d4c79b4L";
@@ -1932,7 +1937,7 @@ function renderSurprisePage() {
             🧩 ตอบคำถาม
           </button>
           <button id="tab-game-memory" onclick="switchGameTab('memory')" class="flex-1 py-2 px-2 rounded-xl transition-all font-bold text-purple-300 hover:text-white">
-            🃏 จับคู่ภาพ
+            🧩 จับคู่ & จิ๊กซอว์
           </button>
         </div>
 
@@ -1996,14 +2001,67 @@ function renderSurprisePage() {
           </div>
         </div>
 
-        <!-- GAME 3: Memory Card Matching Game -->
+        <!-- GAME 3: Memory Card Matching & Jigsaw Puzzle Game -->
         <div id="game-view-memory" class="hidden space-y-4 pt-1">
-          <p class="text-xs text-pink-200 font-cute">
-            🃏 พลิกการ์ดจับคู่รูปภาพความทรงจำของเราให้ครบทั้ง 4 คู่! 💕
-          </p>
-          <div id="memory-grid" class="grid grid-cols-4 gap-2.5 max-w-[320px] mx-auto">
-            <!-- Rendered dynamically -->
+          
+          <!-- Phase 1: Match 1 Pair -->
+          <div id="memory-phase-cards" class="space-y-3">
+            <div class="flex items-center justify-between border-b border-purple-500/30 pb-2">
+              <span class="text-xs font-bold text-pink-300 font-cute">
+                สเต็ป 1: พลิกการ์ดจับคู่รูปภาพ
+              </span>
+              <span class="text-[11px] text-yellow-300 font-mono font-bold bg-purple-950 px-2.5 py-0.5 rounded-full border border-purple-500/30">
+                หาคู่ตรงกัน 1 คู่ 🎯
+              </span>
+            </div>
+            <p class="text-xs text-pink-200/90 font-cute">
+              🃏 พลิกหาคู่รูปภาพที่เหมือนกัน 1 คู่ เพื่อปลดล็อกรูปนำไปต่อจิ๊กซอว์! 💕
+            </p>
+            <div id="memory-grid" class="grid grid-cols-4 gap-2.5 max-w-[320px] mx-auto">
+              <!-- Rendered dynamically -->
+            </div>
           </div>
+
+          <!-- Phase 2: Jigsaw Puzzle -->
+          <div id="memory-phase-jigsaw" class="hidden space-y-3 animate-fade-in">
+            <div class="flex items-center justify-between border-b border-purple-500/30 pb-2">
+              <div class="flex items-center space-x-1.5">
+                <span class="text-sm">🧩</span>
+                <span class="text-xs font-bold text-pink-300 font-cute">
+                  สเต็ป 2: ต่อจิ๊กซอว์ความทรงจำ
+                </span>
+              </div>
+              <span id="jigsaw-correct-badge" class="text-[11px] text-yellow-300 font-mono font-bold bg-purple-950 px-2.5 py-0.5 rounded-full border border-purple-500/30">
+                0 / 9 ชิ้น
+              </span>
+            </div>
+            
+            <p class="text-[11px] sm:text-xs text-pink-200/90 font-cute">
+              แตะชิ้นส่วนที่ 1 แล้วแตะชิ้นส่วนที่ 2 เพื่อสลับตำแหน่งให้ถูกต้อง ✨
+            </p>
+
+            <!-- 3x3 Jigsaw Grid Board -->
+            <div id="jigsaw-board" class="w-[260px] h-[260px] sm:w-[285px] sm:h-[285px] mx-auto grid grid-cols-3 gap-1.5 p-2 rounded-2xl bg-purple-950/80 border-2 border-pink-500/50 shadow-2xl transition-all duration-300">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Puzzle Controls -->
+            <div class="flex items-center justify-center space-x-2 pt-1">
+              <button onclick="openJigsawPreviewModal()" class="px-3 py-1.5 bg-purple-900/60 hover:bg-pink-900/70 border border-purple-500/40 hover:border-pink-500/60 text-purple-200 hover:text-white rounded-xl text-[11px] font-cute transition-all active:scale-95 flex items-center space-x-1 shadow">
+                <span>🖼️</span>
+                <span>ดูรูปตัวอย่าง</span>
+              </button>
+              <button onclick="reshuffleJigsaw()" class="px-3 py-1.5 bg-purple-900/60 hover:bg-pink-900/70 border border-purple-500/40 hover:border-pink-500/60 text-purple-200 hover:text-white rounded-xl text-[11px] font-cute transition-all active:scale-95 flex items-center space-x-1 shadow">
+                <span>🔀</span>
+                <span>สลับใหม่</span>
+              </button>
+              <button onclick="resetToMemoryCards()" class="px-3 py-1.5 bg-purple-900/40 hover:bg-purple-800/60 border border-purple-500/30 text-purple-300 hover:text-white rounded-xl text-[11px] font-cute transition-all active:scale-95 flex items-center space-x-1 shadow">
+                <span>↺</span>
+                <span>เลือกรูปอื่น</span>
+              </button>
+            </div>
+          </div>
+
         </div>
 
         <!-- RED VELVET TRUEMONEY ANGPAO CARD (เมื่อเล่นเกมชนะ / เปิดกล่องสำเร็จ) -->
@@ -2109,6 +2167,22 @@ function renderSurprisePage() {
           <p id="zoom-modal-caption" class="text-xs text-pink-200 font-cute"></p>
           <button onclick="closePhotoZoom()" class="bg-pink-600 hover:bg-pink-500 text-white text-xs px-5 py-2 rounded-full font-semibold">
             ✕ ปิด
+          </button>
+        </div>
+      </div>
+
+      <!-- Jigsaw Original Preview Modal -->
+      <div id="jigsaw-preview-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4" onclick="closeJigsawPreviewModal()">
+        <div class="max-w-xs w-full neon-card p-5 rounded-3xl border-2 border-pink-500/60 text-center space-y-3 shadow-2xl" onclick="event.stopPropagation()">
+          <div class="flex items-center justify-between border-b border-purple-500/30 pb-2">
+            <span class="text-xs font-bold text-pink-300 font-cute">🖼️ รูปตัวอย่างจิ๊กซอว์</span>
+            <button onclick="closeJigsawPreviewModal()" class="text-purple-300 hover:text-white text-xs bg-purple-900/60 px-2.5 py-0.5 rounded-full">✕</button>
+          </div>
+          <div class="w-52 h-52 sm:w-60 sm:h-60 mx-auto rounded-2xl overflow-hidden border-2 border-pink-400/80 shadow-lg">
+            <img id="jigsaw-preview-img" src="" class="w-full h-full object-cover" alt="ตัวอย่างจิ๊กซอว์" />
+          </div>
+          <button onclick="closeJigsawPreviewModal()" class="w-full py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-cute text-xs rounded-xl font-bold shadow-md active:scale-95 transition-all">
+            กลับไปต่อจิ๊กซอว์ ✨
           </button>
         </div>
       </div>
@@ -2511,7 +2585,7 @@ window.answerTrivia = function(chosenIdx) {
   }
 };
 
-// 3. Memory Card Matching Game
+// 3. Memory Card Matching & Jigsaw Puzzle Game
 const ALL_MEMORY_PHOTOS = [
   "/photos/photo_hotpot.jpg",
   "/photos/photo_night.jpg",
@@ -2524,6 +2598,10 @@ const ALL_MEMORY_PHOTOS = [
 ];
 
 function initMemoryGame() {
+  isMemoryPairMatched = false;
+  isJigsawCompleted = false;
+  selectedJigsawIndex = null;
+
   // สุ่มเลือก 4 รูปความทรงจำสำหรับ 4 คู่ (8 ใบ)
   const selectedPhotos = [...ALL_MEMORY_PHOTOS].sort(() => Math.random() - 0.5).slice(0, 4);
   const deck = [];
@@ -2534,6 +2612,12 @@ function initMemoryGame() {
   shuffledMemory = deck.sort(() => Math.random() - 0.5);
   flippedCards = [];
   matchedCount = 0;
+
+  const cardsPhase = document.getElementById('memory-phase-cards');
+  const jigsawPhase = document.getElementById('memory-phase-jigsaw');
+  if (cardsPhase) cardsPhase.classList.remove('hidden');
+  if (jigsawPhase) jigsawPhase.classList.add('hidden');
+
   renderMemoryGrid();
 }
 
@@ -2557,7 +2641,7 @@ function renderMemoryGrid() {
 }
 
 window.flipMemoryCard = function(idx) {
-  if (flippedCards.length >= 2 || flippedCards.includes(idx)) return;
+  if (flippedCards.length >= 2 || flippedCards.includes(idx) || isMemoryPairMatched) return;
   const card = document.getElementById(`memory-card-${idx}`);
   if (!card || card.classList.contains('flipped')) return;
 
@@ -2568,21 +2652,32 @@ window.flipMemoryCard = function(idx) {
   if (flippedCards.length === 2) {
     const [first, second] = flippedCards;
     if (shuffledMemory[first].id === shuffledMemory[second].id) {
+      // จับคู่ได้ 1 คู่ตรงกันสำเร็จ!
       playSound('success');
-      matchedCount += 2;
+      isMemoryPairMatched = true;
       
       const c1 = document.getElementById(`memory-card-${first}`);
       const c2 = document.getElementById(`memory-card-${second}`);
       if (c1) c1.classList.add('matched');
       if (c2) c2.classList.add('matched');
 
-      flippedCards = [];
-      if (matchedCount === shuffledMemory.length) {
-        setTimeout(() => {
-          triggerWinAngpao();
-          showToast("🎉 จับคู่รูปความทรงจำครบทั้ง 4 คู่แล้ว! คนเก่งรับซองของขวัญไปเลยค่ะ 💕");
-        }, 500);
+      currentJigsawPhoto = shuffledMemory[first].img;
+
+      if (typeof confetti === 'function') {
+        try {
+          confetti({
+            particleCount: 90,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+        } catch(err) {}
       }
+
+      showToast("✨ ยอดเยี่ยมมาก! จับคู่รูปสำเร็จแล้ว ไปต่อจิ๊กซอว์กันเลย! 🧩");
+
+      setTimeout(() => {
+        startJigsawPuzzle(currentJigsawPhoto);
+      }, 1100);
     } else {
       setTimeout(() => {
         const c1 = document.getElementById(`memory-card-${first}`);
@@ -2590,9 +2685,179 @@ window.flipMemoryCard = function(idx) {
         if (c1 && !c1.classList.contains('matched')) c1.classList.remove('flipped');
         if (c2 && !c2.classList.contains('matched')) c2.classList.remove('flipped');
         flippedCards = [];
-      }, 900);
+      }, 850);
     }
   }
+};
+
+function startJigsawPuzzle(photoUrl) {
+  currentJigsawPhoto = photoUrl;
+  isJigsawCompleted = false;
+  selectedJigsawIndex = null;
+
+  const cardsPhase = document.getElementById('memory-phase-cards');
+  const jigsawPhase = document.getElementById('memory-phase-jigsaw');
+  if (cardsPhase) cardsPhase.classList.add('hidden');
+  if (jigsawPhase) {
+    jigsawPhase.classList.remove('hidden');
+    jigsawPhase.classList.add('animate-fade-in');
+  }
+
+  // สลับชิ้นส่วน 3x3 (0 ถึง 8) ไม่ให้ตรงทั้งหมดแต่แรก
+  let state = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  do {
+    state = state.sort(() => Math.random() - 0.5);
+  } while (state.every((val, idx) => val === idx));
+
+  currentJigsawState = state;
+  const board = document.getElementById('jigsaw-board');
+  if (board) board.classList.remove('jigsaw-solved-glow');
+
+  renderJigsawGrid();
+}
+
+function renderJigsawGrid() {
+  const board = document.getElementById('jigsaw-board');
+  const badge = document.getElementById('jigsaw-correct-badge');
+  if (!board) return;
+
+  let correctCount = 0;
+  currentJigsawState.forEach((val, idx) => {
+    if (val === idx) correctCount++;
+  });
+
+  if (badge) {
+    badge.innerText = `${correctCount} / 9 ชิ้น`;
+    if (correctCount === 9) {
+      badge.className = "text-[11px] text-green-300 font-mono font-bold bg-green-950/90 border border-green-500/60 px-2.5 py-0.5 rounded-full animate-pulse shadow-md shadow-green-500/30";
+    } else {
+      badge.className = "text-[11px] text-yellow-300 font-mono font-bold bg-purple-950 border border-purple-500/40 px-2.5 py-0.5 rounded-full";
+    }
+  }
+
+  board.innerHTML = currentJigsawState.map((pieceId, slotIdx) => {
+    const isCorrect = pieceId === slotIdx;
+    const isSelected = selectedJigsawIndex === slotIdx;
+    const origRow = Math.floor(pieceId / 3);
+    const origCol = pieceId % 3;
+    const posX = origCol * 50;
+    const posY = origRow * 50;
+
+    return `
+      <div 
+        id="jigsaw-piece-${slotIdx}" 
+        onclick="onTapJigsawPiece(${slotIdx})"
+        class="jigsaw-tile aspect-square rounded-xl cursor-pointer transition-all duration-200 relative overflow-hidden select-none ${
+          isSelected 
+            ? 'ring-4 ring-pink-400 scale-95 z-20 shadow-lg shadow-pink-500/60' 
+            : isCorrect 
+              ? 'border-2 border-green-400/80 shadow-md shadow-green-500/20' 
+              : 'border border-purple-500/40 hover:border-pink-400/70 active:scale-95'
+        }"
+        style="
+          background-image: url('${currentJigsawPhoto}');
+          background-size: 300% 300%;
+          background-position: ${posX}% ${posY}%;
+        "
+      >
+        ${isSelected ? '<div class="absolute inset-0 bg-pink-500/25 pointer-events-none animate-pulse"></div>' : ''}
+        ${isCorrect ? '<div class="absolute bottom-1 right-1 text-[9px] bg-green-500/90 text-white rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold pointer-events-none shadow">✓</div>' : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+window.onTapJigsawPiece = function(slotIdx) {
+  if (isJigsawCompleted) return;
+
+  if (selectedJigsawIndex === null) {
+    selectedJigsawIndex = slotIdx;
+    playSound('tap');
+    renderJigsawGrid();
+  } else if (selectedJigsawIndex === slotIdx) {
+    selectedJigsawIndex = null;
+    playSound('tap');
+    renderJigsawGrid();
+  } else {
+    // สลับตำแหน่งระหว่างชิ้นที่เลือกกับชิ้นใหม่
+    const firstIdx = selectedJigsawIndex;
+    const secondIdx = slotIdx;
+
+    const temp = currentJigsawState[firstIdx];
+    currentJigsawState[firstIdx] = currentJigsawState[secondIdx];
+    currentJigsawState[secondIdx] = temp;
+
+    selectedJigsawIndex = null;
+    playSound('tap');
+    renderJigsawGrid();
+
+    // ตรวจสอบว่าต่อครบทุกตำแหน่งหรือยัง
+    checkJigsawCompletion();
+  }
+};
+
+function checkJigsawCompletion() {
+  const isComplete = currentJigsawState.every((val, idx) => val === idx);
+  if (isComplete) {
+    isJigsawCompleted = true;
+    playSound('success');
+
+    const board = document.getElementById('jigsaw-board');
+    if (board) {
+      board.classList.add('jigsaw-solved-glow');
+    }
+
+    if (typeof confetti === 'function') {
+      try {
+        confetti({
+          particleCount: 180,
+          spread: 95,
+          colors: ['#fbbf24', '#ec4899', '#f43f5e', '#c084fc', '#ffffff'],
+          origin: { y: 0.6 }
+        });
+      } catch(err) {}
+    }
+
+    showToast("🎉 เก่งที่สุดเลยยย! ต่อจิ๊กซอว์ความทรงจำสำเร็จแล้ว 💕");
+
+    setTimeout(() => {
+      triggerWinAngpao();
+    }, 900);
+  }
+}
+
+window.reshuffleJigsaw = function() {
+  playSound('tap');
+  let state = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  do {
+    state = state.sort(() => Math.random() - 0.5);
+  } while (state.every((val, idx) => val === idx));
+  currentJigsawState = state;
+  selectedJigsawIndex = null;
+  isJigsawCompleted = false;
+  const board = document.getElementById('jigsaw-board');
+  if (board) board.classList.remove('jigsaw-solved-glow');
+  renderJigsawGrid();
+  showToast("🔀 สลับตำแหน่งชิ้นส่วนใหม่แล้วค่ะ");
+};
+
+window.resetToMemoryCards = function() {
+  playSound('tap');
+  initMemoryGame();
+  showToast("🃏 กลับมาเลือกจับคู่รูปภาพใหม่อีกครั้ง");
+};
+
+window.openJigsawPreviewModal = function() {
+  playSound('tap');
+  const modal = document.getElementById('jigsaw-preview-modal');
+  const img = document.getElementById('jigsaw-preview-img');
+  if (img) img.src = currentJigsawPhoto;
+  if (modal) modal.classList.remove('hidden');
+};
+
+window.closeJigsawPreviewModal = function() {
+  const modal = document.getElementById('jigsaw-preview-modal');
+  if (modal) modal.classList.add('hidden');
 };
 
 // Start on the last active screen persisted in localStorage
