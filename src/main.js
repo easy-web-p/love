@@ -1054,10 +1054,20 @@ function renderPasscodeScreen() {
 
 function setupPinInput() {
   const input = document.getElementById('native-pin-input');
+  const box = document.getElementById('passcode-box');
   if (!input) return;
 
   input.value = enteredPin;
   setTimeout(() => input.focus(), 150);
+
+  if (box) {
+    box.addEventListener('click', (e) => {
+      // Don't focus if clicking buttons or modals
+      if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
+        input.focus();
+      }
+    });
+  }
 
   input.addEventListener('input', (e) => {
     const rawVal = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
@@ -2390,6 +2400,12 @@ window.switchGameTab = function(tabName) {
 
   if (tabName === 'scratch') {
     setTimeout(initScratchCard, 50);
+  } else if (tabName === 'memory') {
+    if (isMemoryPairMatched && !isJigsawCompleted) {
+      renderJigsawGrid();
+    } else if (!isMemoryPairMatched) {
+      renderMemoryGrid();
+    }
   }
 };
 
@@ -2703,11 +2719,11 @@ function startJigsawPuzzle(photoUrl) {
     jigsawPhase.classList.add('animate-fade-in');
   }
 
-  // สลับชิ้นส่วน 3x3 (0 ถึง 8) ไม่ให้ตรงทั้งหมดแต่แรก
+  // สลับชิ้นส่วน 3x3 (0 ถึง 8) ให้กระจายตัวอย่างน้อย 5 ชิ้นขึ้นไปเพื่อความสนุก
   let state = [0, 1, 2, 3, 4, 5, 6, 7, 8];
   do {
     state = state.sort(() => Math.random() - 0.5);
-  } while (state.every((val, idx) => val === idx));
+  } while (state.filter((val, idx) => val === idx).length > 3);
 
   currentJigsawState = state;
   const board = document.getElementById('jigsaw-board');
@@ -2831,7 +2847,7 @@ window.reshuffleJigsaw = function() {
   let state = [0, 1, 2, 3, 4, 5, 6, 7, 8];
   do {
     state = state.sort(() => Math.random() - 0.5);
-  } while (state.every((val, idx) => val === idx));
+  } while (state.filter((val, idx) => val === idx).length > 3);
   currentJigsawState = state;
   selectedJigsawIndex = null;
   isJigsawCompleted = false;
