@@ -1781,11 +1781,6 @@ const PHOTO_ALBUM = [
     date: "Hotpot Date"
   },
   {
-    url: "/photos/photo_night.jpg",
-    caption: "โมเมนต์น่ารักๆ ตอนไปเที่ยว กินขนมด้วยกัน มีความสุขที่สุดเลยย 🥤😋💖",
-    date: "Night Date & Sweet Treat"
-  },
-  {
     url: "/photos/photo_bouquet.jpg",
     caption: "ช่อดอกไม้แทนความรู้สึกดีๆ ที่ตั้งใจมอบให้เธอคนเดียวเลยนะ 💐🌸",
     date: "Special Pastel Bouquet"
@@ -1794,11 +1789,6 @@ const PHOTO_ALBUM = [
     url: "/photos/photo_sportsday.jpg",
     caption: "ความทรงจำในรั้วโรงเรียนและวันกีฬาสีที่เคียงข้างกัน 🎪📣✨",
     date: "School Sports Day"
-  },
-  {
-    url: "/photos/photo_student.jpg",
-    caption: "คนเก่งในชุดนักเรียน ตั้งใจเรียนและน่ารักเสมอนะคะ 🎓👔💕",
-    date: "Student Portrait"
   },
   {
     url: "/photos/photo2.jpg",
@@ -1811,6 +1801,7 @@ const PHOTO_ALBUM = [
     date: "Forever in Memory"
   }
 ];
+
 
 
 function renderSurprisePage() {
@@ -2604,10 +2595,8 @@ window.answerTrivia = function(chosenIdx) {
 // 3. Memory Card Matching & Jigsaw Puzzle Game
 const ALL_MEMORY_PHOTOS = [
   "/photos/photo_hotpot.jpg",
-  "/photos/photo_night.jpg",
   "/photos/photo_bouquet.jpg",
   "/photos/photo_sportsday.jpg",
-  "/photos/photo_student.jpg",
   "/photos/photo1.jpg",
   "/photos/photo2.jpg",
   "/photos/photo5.jpg"
